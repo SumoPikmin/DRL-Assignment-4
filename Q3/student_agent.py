@@ -3,8 +3,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+device = "cpu"  # Use CPU because the machine is CPU-only
 
-device = "cpu" # cpu because of leaderboard
 # Define the MLP network
 def mlp(in_dim, out_dim, hidden=256, final_tanh=False):
     layers = [
@@ -32,9 +32,11 @@ class Agent(object):
         # Define the action space
         self.action_space = gym.spaces.Box(-1.0, 1.0, (21,), np.float64)
 
-        # Load the actor model weights
+        # Load the actor model weights, ensuring it's loaded to CPU
         self.actor = Actor(state_dim=67, action_dim=21, action_limit=1.0).to(device)
-        self.actor.load_state_dict(torch.load("best_humanoid_actor.pth"))  # Load weights
+        
+        # Load the weights from the saved model, mapping to the CPU if needed
+        self.actor.load_state_dict(torch.load("best_humanoid_actor.pth", map_location=torch.device('cpu')))  # Load weights
         self.actor.eval()  # Set the actor to evaluation mode
 
     def act(self, observation):
