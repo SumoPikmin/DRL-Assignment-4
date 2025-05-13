@@ -28,13 +28,13 @@ class Actor(nn.Module):
 
 # Define the Agent that uses the actor network
 class Agent(object):
-    def __init__(self, actor_model_path):
+    def __init__(self):
         # Define the action space
         self.action_space = gym.spaces.Box(-1.0, 1.0, (21,), np.float64)
 
         # Load the actor model weights
         self.actor = Actor(state_dim=67, action_dim=21, action_limit=1.0).to(device)
-        self.actor.load_state_dict(torch.load(actor_model_path))  # Load weights
+        self.actor.load_state_dict(torch.load("best_humanoid_actor.pth"))  # Load weights
         self.actor.eval()  # Set the actor to evaluation mode
 
     def act(self, observation):
